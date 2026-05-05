@@ -2966,6 +2966,9 @@
             elements.refreshButton.disabled = isLoading;
             elements.saveConnectionButton.disabled = isLoading;
             elements.saveEditModalButton.disabled = isLoading;
+            if (!isLoading) {
+                render();
+            }
         }
 
         function setStatus(message) {
