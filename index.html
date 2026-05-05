@@ -1179,7 +1179,7 @@
             function render() {
                 const grouped = buildHierarchy(applyFilters(state.rows));
                 const visiblePeople = grouped.length;
-                const visibleItems = grouped.reduce((sum, person) => sum + person.items.length, 0);
+                const visibleItems = grouped.reduce((sum, person) => sum + (person.rows ? person.rows.length : 0), 0);
 
                 elements.visibleCount.textContent = visibleItems;
                 elements.board.innerHTML = '';
