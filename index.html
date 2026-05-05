@@ -431,18 +431,25 @@
                 display: grid;
                 grid-template-columns: auto minmax(0, 1fr) auto;
                 align-items: center;
-                gap: 10px;
-                border-radius: 16px;
+                gap: 12px;
+                border-radius: 20px;
                 border: 1px solid rgba(92, 74, 50, 0.12);
-                background: rgba(255, 255, 255, 0.9);
-                padding: 10px 12px;
+                border-left: 4px solid rgba(183, 93, 51, 0.7);
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(248, 240, 228, 0.82));
+                padding: 13px 14px 13px 10px;
                 text-align: left;
                 transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
             }
 
             .item-card:hover {
                 transform: translateY(-1px);
-                box-shadow: 0 14px 20px rgba(58, 41, 24, 0.08);
+                box-shadow: 0 16px 28px rgba(58, 41, 24, 0.1);
+            }
+
+            .item-card:focus-visible {
+                outline: none;
+                border-color: rgba(183, 93, 51, 0.42);
+                box-shadow: 0 0 0 4px rgba(183, 93, 51, 0.12), 0 16px 28px rgba(58, 41, 24, 0.1);
             }
 
             .item-card.is-dragging {
@@ -453,33 +460,34 @@
                 display: inline-flex;
                 align-items: center;
                 justify-content: center;
-                width: 30px;
-                height: 30px;
+                width: 28px;
+                height: 28px;
                 border-radius: 10px;
-                background: rgba(183, 93, 51, 0.09);
+                background: rgba(183, 93, 51, 0.08);
                 color: var(--accent);
-                font-size: 15px;
+                font-size: 14px;
                 line-height: 1;
             }
 
             .item-main {
                 display: flex;
-                flex-direction: column;
-                gap: 4px;
+                align-items: center;
+                gap: 10px;
                 min-width: 0;
             }
 
             .item-name {
+                font-size: 1rem;
                 font-weight: 800;
-                letter-spacing: -0.01em;
-                line-height: 1.25;
+                letter-spacing: -0.02em;
+                line-height: 1.3;
                 overflow: hidden;
                 text-overflow: ellipsis;
+                white-space: nowrap;
             }
 
             .item-meta {
-                display: flex;
-                flex-wrap: wrap;
+                display: none;
                 gap: 8px;
                 color: var(--muted);
                 font-size: 12px;
@@ -505,8 +513,8 @@
             .item-mini-btn {
                 border: 1px solid rgba(92, 74, 50, 0.14);
                 border-radius: 999px;
-                background: rgba(255, 255, 255, 0.95);
-                padding: 6px 9px;
+                background: rgba(255, 255, 255, 0.96);
+                padding: 6px 10px;
                 font-size: 12px;
                 font-weight: 700;
                 color: var(--ink);
@@ -756,12 +764,21 @@
                 }
 
                 .item-card {
-                    grid-template-columns: auto minmax(0, 1fr);
+                    grid-template-columns: auto minmax(0, 1fr) auto;
+                    gap: 10px;
+                    padding: 12px 12px 12px 10px;
+                }
+
+                .item-main {
+                    gap: 8px;
+                }
+
+                .item-name {
+                    white-space: normal;
                 }
 
                 .item-actions {
-                    grid-column: 1 / -1;
-                    justify-content: flex-start;
+                    justify-content: flex-end;
                 }
 
                 .toast-stack {
@@ -1405,31 +1422,13 @@
                 itemName.className = 'item-name';
                 itemName.textContent = row.item || '(Untitled item)';
 
-                const meta = document.createElement('div');
-                meta.className = 'item-meta';
-                if (showGroupChip) {
-                    const groupChip = document.createElement('span');
-                    groupChip.className = 'item-chip';
-                    groupChip.textContent = row.group || 'Ungrouped';
-                    meta.appendChild(groupChip);
-                }
-                if (row.asOfDate) {
-                    const dateChip = document.createElement('span');
-                    dateChip.className = 'item-chip';
-                    dateChip.textContent = `As of ${row.asOfDate}`;
-                    meta.appendChild(dateChip);
-                }
-
                 main.appendChild(itemName);
-                if (meta.childElementCount) {
-                    main.appendChild(meta);
-                }
 
                 const actions = document.createElement('div');
                 actions.className = 'item-actions';
                 const button = document.createElement('span');
                 button.className = 'item-mini-btn';
-                button.textContent = 'Change person';
+                button.textContent = 'Open';
                 actions.appendChild(button);
 
                 card.appendChild(dragHandle);
@@ -2024,21 +2023,24 @@
 
         .item-card {
             border: 1px solid rgba(34, 44, 39, 0.1);
-            background: var(--card);
-            border-radius: 16px;
-            padding: 10px 12px;
+            border-left: 4px solid rgba(22, 122, 106, 0.72);
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.98), rgba(244, 248, 246, 0.9));
+            border-radius: 18px;
+            padding: 13px 14px 13px 10px;
             display: grid;
-            gap: 7px;
+            grid-template-columns: auto minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px;
             text-align: left;
             width: 100%;
-            box-shadow: 0 6px 18px rgba(31, 46, 38, 0.06);
+            box-shadow: 0 8px 20px rgba(31, 46, 38, 0.07);
             transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
         }
 
         .item-card:hover {
             transform: translateY(-1px);
             border-color: rgba(22, 122, 106, 0.3);
-            box-shadow: 0 12px 26px rgba(31, 46, 38, 0.11);
+            box-shadow: 0 16px 30px rgba(31, 46, 38, 0.11);
         }
 
         .item-card:focus-visible,
@@ -2049,24 +2051,21 @@
         }
 
         .item-card-main {
-            display: grid;
-            gap: 4px;
+            min-width: 0;
         }
 
         .item-title {
             font-size: 15px;
             font-weight: 800;
             letter-spacing: -0.02em;
-            line-height: 1.35;
+            line-height: 1.3;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
         .item-meta {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            color: var(--muted);
-            font-size: 12px;
-            font-weight: 700;
+            display: none;
         }
 
         .pill {
@@ -2083,6 +2082,7 @@
             color: var(--accent-strong);
             font-size: 12px;
             font-weight: 800;
+            white-space: nowrap;
         }
 
         .single-items {
@@ -2723,20 +2723,11 @@
             item.addEventListener('dragstart', (event) => handleItemDragStart(event, row));
             item.addEventListener('dragend', handleItemDragEnd);
 
-            const meta = [];
-            if (showGroupPill && row.group) {
-                meta.push(`<span class="pill">${escapeHtml(row.group)}</span>`);
-            }
-            if (row.asOfDate) {
-                meta.push(`<span>${escapeHtml(row.asOfDate)}</span>`);
-            }
-
             item.innerHTML = `
                 <div class="item-card-main">
                     <div class="item-title">${escapeHtml(row.item || 'Untitled item')}</div>
-                    <div class="item-meta">${meta.join('')}</div>
                 </div>
-                <div class="item-action">Click to change person</div>
+                <div class="item-action">Open</div>
             `;
 
             return item;
