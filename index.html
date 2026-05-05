@@ -3021,6 +3021,19 @@
                 .replace(/'/g, '&#39;');
         }
 
+        function isValidAppsScriptWebAppUrl(url) {
+            try {
+                const u = new URL(String(url).trim());
+                // Must be hosted on script.google.com and reference a deployment under /macros/s/
+                if (!u.hostname.endsWith('google.com')) return false;
+                if (!u.pathname.includes('/macros/s/')) return false;
+                // Require the deployed exec path (may include trailing query params)
+                return u.pathname.includes('/exec') || u.pathname.endsWith('/exec');
+            } catch (e) {
+                return false;
+            }
+        }
+
         function buildAppsScriptUrl(params) {
             const query = new URLSearchParams({
                 ...params,
