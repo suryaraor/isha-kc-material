@@ -2547,6 +2547,11 @@
                 return;
             }
 
+            if (!isValidAppsScriptWebAppUrl(nextAppsScriptUrl)) {
+                showError('Use the deployed Apps Script web app URL that ends in /exec, not the editor URL. Open Deploy > Manage deployments > Web app and copy the deployment URL.');
+                return;
+            }
+
             config.sheetId = nextSheetId;
             config.appsScriptUrl = nextAppsScriptUrl;
             config.sheetName = nextSheetName;
