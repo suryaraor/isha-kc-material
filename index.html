@@ -1,0 +1,3067 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Isha KC Materials Board</title>
+        <meta name="description" content="Organize Isha KC materials by person, group, and item with quick reassignment and drag-and-drop.">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+        <style>
+            :root {
+                --bg: #f4efe6;
+                --bg-accent: #eadfce;
+                --panel: rgba(255, 252, 246, 0.92);
+                --panel-strong: #fffaf3;
+                --line: rgba(92, 74, 50, 0.14);
+                --ink: #241d17;
+                --muted: #6f6153;
+                --accent: #b75d33;
+                --accent-2: #4f7268;
+                --accent-3: #7c613f;
+                --shadow: 0 22px 60px rgba(68, 48, 30, 0.14);
+                --shadow-soft: 0 12px 30px rgba(68, 48, 30, 0.09);
+                --radius-xl: 30px;
+                --radius-lg: 22px;
+                --radius-md: 16px;
+                --radius-sm: 12px;
+            }
+
+            * {
+                box-sizing: border-box;
+            }
+
+            html {
+                scroll-behavior: smooth;
+            }
+
+            body {
+                margin: 0;
+                min-height: 100vh;
+                color: var(--ink);
+                font-family: 'Plus Jakarta Sans', sans-serif;
+                background:
+                    radial-gradient(circle at top left, rgba(183, 93, 51, 0.16), transparent 38%),
+                    radial-gradient(circle at right top, rgba(79, 114, 104, 0.15), transparent 30%),
+                    linear-gradient(180deg, #fbf7f0 0%, #f6f0e7 42%, #efe4d4 100%);
+            }
+
+            body::before {
+                content: '';
+                position: fixed;
+                inset: 0;
+                pointer-events: none;
+                background-image:
+                    linear-gradient(rgba(255, 255, 255, 0.28) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
+                background-size: 42px 42px;
+                mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 88%);
+                opacity: 0.45;
+            }
+
+            button,
+            input,
+            select,
+            textarea {
+                font: inherit;
+            }
+
+            button {
+                cursor: pointer;
+            }
+
+            .app {
+                width: min(1400px, calc(100vw - 28px));
+                margin: 14px auto 28px;
+                display: flex;
+                flex-direction: column;
+                gap: 18px;
+                position: relative;
+                z-index: 1;
+            }
+
+            .hero {
+                border: 1px solid rgba(83, 64, 45, 0.1);
+                border-radius: calc(var(--radius-xl) + 4px);
+                padding: 26px;
+                background:
+                    linear-gradient(135deg, rgba(255, 252, 246, 0.96), rgba(248, 240, 228, 0.9)),
+                    var(--panel);
+                box-shadow: var(--shadow);
+                backdrop-filter: blur(16px);
+                overflow: hidden;
+                position: relative;
+            }
+
+            .hero::after {
+                content: '';
+                position: absolute;
+                width: 240px;
+                height: 240px;
+                border-radius: 999px;
+                right: -80px;
+                top: -90px;
+                background: radial-gradient(circle, rgba(183, 93, 51, 0.18), transparent 62%);
+            }
+
+            .hero-top {
+                display: flex;
+                align-items: flex-start;
+                justify-content: space-between;
+                gap: 18px;
+            }
+
+            .eyebrow {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                border-radius: 999px;
+                background: rgba(183, 93, 51, 0.1);
+                color: var(--accent);
+                font-size: 12px;
+                font-weight: 700;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                margin-bottom: 12px;
+            }
+
+            .hero h1 {
+                margin: 0;
+                font-family: 'Fraunces', serif;
+                font-size: clamp(2rem, 3vw, 3.6rem);
+                line-height: 1;
+                letter-spacing: -0.03em;
+            }
+
+            .hero p {
+                margin: 12px 0 0;
+                max-width: 760px;
+                color: var(--muted);
+                font-size: 1rem;
+                line-height: 1.6;
+            }
+
+            .hero-actions {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: flex-end;
+                gap: 10px;
+            }
+
+            .pill {
+                display: inline-flex;
+                align-items: center;
+                gap: 10px;
+                padding: 12px 14px;
+                border-radius: 999px;
+                border: 1px solid var(--line);
+                background: rgba(255, 255, 255, 0.62);
+                color: var(--ink);
+                box-shadow: 0 8px 20px rgba(54, 37, 22, 0.05);
+            }
+
+            .pill strong {
+                font-size: 1rem;
+            }
+
+            .stats {
+                display: grid;
+                grid-template-columns: repeat(4, minmax(0, 1fr));
+                gap: 12px;
+                margin-top: 22px;
+            }
+
+            .stat-card {
+                padding: 14px 16px;
+                border: 1px solid var(--line);
+                border-radius: 18px;
+                background: rgba(255, 255, 255, 0.72);
+            }
+
+            .stat-label {
+                color: var(--muted);
+                font-size: 12px;
+                letter-spacing: 0.08em;
+                text-transform: uppercase;
+                font-weight: 700;
+            }
+
+            .stat-value {
+                margin-top: 8px;
+                font-family: 'Fraunces', serif;
+                font-size: 2rem;
+                line-height: 1;
+            }
+
+            .toolbar {
+                display: grid;
+                grid-template-columns: minmax(0, 1.2fr) minmax(220px, 0.55fr) auto auto;
+                gap: 12px;
+                align-items: end;
+                padding: 18px;
+                border: 1px solid rgba(83, 64, 45, 0.1);
+                border-radius: var(--radius-xl);
+                background: rgba(255, 252, 246, 0.84);
+                box-shadow: var(--shadow-soft);
+                backdrop-filter: blur(14px);
+            }
+
+            .field {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .field label {
+                font-size: 12px;
+                color: var(--muted);
+                text-transform: uppercase;
+                letter-spacing: 0.08em;
+                font-weight: 700;
+            }
+
+            .input,
+            .select {
+                width: 100%;
+                border: 1px solid rgba(92, 74, 50, 0.16);
+                border-radius: 16px;
+                background: rgba(255, 255, 255, 0.92);
+                color: var(--ink);
+                padding: 14px 16px;
+                outline: none;
+                transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+            }
+
+            .input:focus,
+            .select:focus {
+                border-color: rgba(183, 93, 51, 0.45);
+                box-shadow: 0 0 0 4px rgba(183, 93, 51, 0.12);
+            }
+
+            .toolbar-actions {
+                display: flex;
+                gap: 10px;
+                flex-wrap: wrap;
+            }
+
+            .btn {
+                border: 1px solid transparent;
+                border-radius: 16px;
+                padding: 14px 16px;
+                font-weight: 700;
+                transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+                user-select: none;
+            }
+
+            .btn:hover {
+                transform: translateY(-1px);
+            }
+
+            .btn-primary {
+                background: linear-gradient(135deg, var(--accent), #d27742);
+                color: #fff;
+                box-shadow: 0 12px 22px rgba(183, 93, 51, 0.28);
+            }
+
+            .btn-secondary {
+                background: rgba(255, 255, 255, 0.9);
+                color: var(--ink);
+                border-color: rgba(92, 74, 50, 0.14);
+            }
+
+            .btn-ghost {
+                background: transparent;
+                color: var(--muted);
+                border-color: rgba(92, 74, 50, 0.12);
+            }
+
+            .meta-row {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 10px;
+                align-items: center;
+                color: var(--muted);
+                font-size: 0.92rem;
+            }
+
+            .meta-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                padding: 8px 12px;
+                border-radius: 999px;
+                background: rgba(79, 114, 104, 0.08);
+                color: var(--accent-2);
+                border: 1px solid rgba(79, 114, 104, 0.16);
+                font-size: 12px;
+                font-weight: 700;
+            }
+
+            .board-shell {
+                padding-bottom: 18px;
+            }
+
+            .board {
+                display: grid;
+                gap: 14px;
+            }
+
+            .person-card {
+                border-radius: calc(var(--radius-xl) - 4px);
+                border: 1px solid rgba(92, 74, 50, 0.12);
+                background: rgba(255, 252, 246, 0.9);
+                box-shadow: var(--shadow-soft);
+                overflow: hidden;
+                transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            }
+
+            .person-card.drag-over {
+                border-color: rgba(183, 93, 51, 0.7);
+                box-shadow: 0 0 0 4px rgba(183, 93, 51, 0.12), var(--shadow-soft);
+                transform: translateY(-1px);
+            }
+
+            .person-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 12px;
+                padding: 18px 20px;
+                background: linear-gradient(135deg, rgba(248, 240, 228, 0.95), rgba(255, 255, 255, 0.82));
+                border-bottom: 1px solid rgba(92, 74, 50, 0.1);
+            }
+
+            .person-title {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+            }
+
+            .person-name {
+                font-size: 1.15rem;
+                font-weight: 800;
+                letter-spacing: -0.02em;
+            }
+
+            .person-subtitle {
+                color: var(--muted);
+                font-size: 0.88rem;
+            }
+
+            .person-badges {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: flex-end;
+            }
+
+            .badge {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                border-radius: 999px;
+                padding: 8px 10px;
+                font-size: 12px;
+                font-weight: 700;
+                border: 1px solid rgba(92, 74, 50, 0.12);
+                background: rgba(255, 255, 255, 0.78);
+            }
+
+            .badge-soft {
+                background: rgba(183, 93, 51, 0.08);
+                color: var(--accent);
+                border-color: rgba(183, 93, 51, 0.16);
+            }
+
+            .badge-muted {
+                color: var(--muted);
+            }
+
+            .person-body {
+                padding: 16px;
+                display: grid;
+                gap: 14px;
+            }
+
+            .person-empty {
+                padding: 18px;
+                border-radius: 18px;
+                border: 1px dashed rgba(92, 74, 50, 0.18);
+                color: var(--muted);
+                background: rgba(255, 255, 255, 0.66);
+            }
+
+            .group-box {
+                border-radius: 20px;
+                border: 1px solid rgba(79, 114, 104, 0.16);
+                background: linear-gradient(180deg, rgba(79, 114, 104, 0.07), rgba(255, 255, 255, 0.72));
+                overflow: hidden;
+            }
+
+            .group-header {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                gap: 10px;
+                padding: 12px 14px;
+                background: rgba(79, 114, 104, 0.06);
+                border-bottom: 1px solid rgba(79, 114, 104, 0.12);
+                font-weight: 800;
+            }
+
+            .group-header span {
+                color: var(--accent-2);
+                font-size: 0.92rem;
+            }
+
+            .group-body {
+                padding: 12px;
+                display: grid;
+                gap: 10px;
+            }
+
+            .item-card {
+                width: 100%;
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr) auto;
+                align-items: center;
+                gap: 12px;
+                border-radius: 18px;
+                border: 1px solid rgba(92, 74, 50, 0.12);
+                background: rgba(255, 255, 255, 0.9);
+                padding: 12px 14px;
+                text-align: left;
+                transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+            }
+
+            .item-card:hover {
+                transform: translateY(-1px);
+                box-shadow: 0 14px 20px rgba(58, 41, 24, 0.08);
+            }
+
+            .item-card.is-dragging {
+                opacity: 0.55;
+            }
+
+            .item-drag-handle {
+                display: inline-flex;
+                align-items: center;
+                justify-content: center;
+                width: 36px;
+                height: 36px;
+                border-radius: 12px;
+                background: rgba(183, 93, 51, 0.09);
+                color: var(--accent);
+                font-size: 18px;
+                line-height: 1;
+            }
+
+            .item-main {
+                display: flex;
+                flex-direction: column;
+                gap: 6px;
+                min-width: 0;
+            }
+
+            .item-name {
+                font-weight: 800;
+                letter-spacing: -0.01em;
+                line-height: 1.3;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            .item-meta {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                color: var(--muted);
+                font-size: 12px;
+            }
+
+            .item-chip {
+                display: inline-flex;
+                align-items: center;
+                gap: 6px;
+                padding: 6px 10px;
+                border-radius: 999px;
+                border: 1px solid rgba(92, 74, 50, 0.12);
+                background: rgba(244, 239, 230, 0.82);
+                color: var(--muted);
+            }
+
+            .item-actions {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .item-mini-btn {
+                border: 1px solid rgba(92, 74, 50, 0.14);
+                border-radius: 999px;
+                background: rgba(255, 255, 255, 0.95);
+                padding: 8px 10px;
+                font-size: 12px;
+                font-weight: 700;
+                color: var(--ink);
+            }
+
+            .single-items {
+                display: grid;
+                gap: 10px;
+            }
+
+            .single-item-row {
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) auto;
+                gap: 12px;
+            }
+
+            .single-item-row .item-card {
+                grid-column: 1 / -1;
+            }
+
+            .empty-state,
+            .loading-state,
+            .error-state {
+                border-radius: var(--radius-xl);
+                border: 1px solid rgba(92, 74, 50, 0.12);
+                background: rgba(255, 252, 246, 0.9);
+                box-shadow: var(--shadow-soft);
+                padding: 28px;
+                text-align: center;
+            }
+
+            .empty-state h2,
+            .loading-state h2,
+            .error-state h2 {
+                margin: 0 0 8px;
+                font-family: 'Fraunces', serif;
+                font-size: 1.8rem;
+            }
+
+            .empty-state p,
+            .loading-state p,
+            .error-state p {
+                margin: 0;
+                color: var(--muted);
+                line-height: 1.6;
+            }
+
+            .loading-state {
+                display: grid;
+                place-items: center;
+                min-height: 360px;
+            }
+
+            .loading-ring {
+                width: 54px;
+                height: 54px;
+                border-radius: 999px;
+                border: 4px solid rgba(183, 93, 51, 0.12);
+                border-top-color: var(--accent);
+                animation: spin 1s linear infinite;
+                margin: 0 auto 18px;
+            }
+
+            @keyframes spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+
+            .toast-stack {
+                position: fixed;
+                right: 18px;
+                bottom: 18px;
+                display: grid;
+                gap: 10px;
+                z-index: 50;
+                pointer-events: none;
+            }
+
+            .toast {
+                min-width: 260px;
+                max-width: min(420px, calc(100vw - 36px));
+                padding: 14px 16px;
+                border-radius: 18px;
+                background: rgba(35, 28, 21, 0.95);
+                color: #fff8f2;
+                box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+                pointer-events: auto;
+            }
+
+            .toast strong {
+                display: block;
+                margin-bottom: 4px;
+                font-size: 14px;
+            }
+
+            .toast p {
+                margin: 0;
+                font-size: 13px;
+                line-height: 1.45;
+                opacity: 0.92;
+            }
+
+            .overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(27, 19, 12, 0.52);
+                backdrop-filter: blur(6px);
+                display: grid;
+                place-items: center;
+                padding: 18px;
+                z-index: 40;
+            }
+
+            .overlay[hidden] {
+                display: none;
+            }
+
+            .modal {
+                width: min(720px, 100%);
+                border-radius: 28px;
+                background: var(--panel-strong);
+                border: 1px solid rgba(255, 255, 255, 0.7);
+                box-shadow: 0 28px 80px rgba(0, 0, 0, 0.28);
+                overflow: hidden;
+            }
+
+            .modal-header {
+                padding: 22px 24px 18px;
+                border-bottom: 1px solid rgba(92, 74, 50, 0.12);
+                background: linear-gradient(135deg, rgba(248, 240, 228, 0.92), rgba(255, 255, 255, 0.96));
+            }
+
+            .modal-title {
+                margin: 0;
+                font-family: 'Fraunces', serif;
+                font-size: 2rem;
+            }
+
+            .modal-subtitle {
+                margin: 8px 0 0;
+                color: var(--muted);
+                line-height: 1.55;
+            }
+
+            .modal-body {
+                padding: 22px 24px 24px;
+                display: grid;
+                gap: 16px;
+            }
+
+            .modal-grid {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 14px;
+            }
+
+            .help-text {
+                color: var(--muted);
+                font-size: 13px;
+                line-height: 1.5;
+            }
+
+            .modal-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 10px;
+                flex-wrap: wrap;
+                padding-top: 4px;
+            }
+
+            .stack {
+                display: grid;
+                gap: 12px;
+            }
+
+            .config-note {
+                padding: 14px 16px;
+                border-radius: 18px;
+                background: rgba(79, 114, 104, 0.08);
+                border: 1px solid rgba(79, 114, 104, 0.16);
+                color: var(--accent-2);
+                line-height: 1.55;
+                font-size: 13px;
+            }
+
+            .hidden {
+                display: none !important;
+            }
+
+            @media (max-width: 980px) {
+                .hero-top,
+                .toolbar {
+                    grid-template-columns: 1fr;
+                    display: grid;
+                }
+
+                .hero-actions {
+                    justify-content: flex-start;
+                }
+
+                .stats {
+                    grid-template-columns: repeat(2, minmax(0, 1fr));
+                }
+
+                .toolbar {
+                    grid-template-columns: 1fr;
+                }
+
+                .modal-grid {
+                    grid-template-columns: 1fr;
+                }
+            }
+
+            @media (max-width: 640px) {
+                .app {
+                    width: min(100vw - 16px, 1400px);
+                    margin-top: 8px;
+                }
+
+                .hero,
+                .toolbar,
+                .empty-state,
+                .loading-state,
+                .error-state {
+                    border-radius: 22px;
+                }
+
+                .hero {
+                    padding: 20px;
+                }
+
+                .hero h1 {
+                    line-height: 1.05;
+                }
+
+                .stats {
+                    grid-template-columns: 1fr 1fr;
+                }
+
+                .person-header {
+                    flex-direction: column;
+                    align-items: flex-start;
+                }
+
+                .person-badges {
+                    justify-content: flex-start;
+                }
+
+                .item-card {
+                    grid-template-columns: auto minmax(0, 1fr);
+                }
+
+                .item-actions {
+                    grid-column: 1 / -1;
+                    justify-content: flex-start;
+                }
+
+                .toast-stack {
+                    right: 12px;
+                    left: 12px;
+                }
+
+                .toast {
+                    min-width: 0;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="app">
+            <section class="hero">
+                <div class="hero-top">
+                    <div>
+                        <div class="eyebrow">Isha KC materials board</div>
+                        <h1>Keep items organized by person, group, and date.</h1>
+                        <p>
+                            Use this board to view the sheet as people first, collapse single-item groups for a cleaner scan,
+                            click any item to reassign it, or drag items directly to another person card.
+                        </p>
+                    </div>
+                    <div class="hero-actions">
+                        <div class="pill"><strong id="activeSheetLabel">Sheet</strong></div>
+                        <div class="pill"><strong id="activeUpdatedLabel">Ready</strong></div>
+                    </div>
+                </div>
+
+                <div class="stats">
+                    <div class="stat-card">
+                        <div class="stat-label">Items</div>
+                        <div class="stat-value" id="itemCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">People</div>
+                        <div class="stat-value" id="personCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Groups</div>
+                        <div class="stat-value" id="groupCount">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Visible</div>
+                        <div class="stat-value" id="visibleCount">0</div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="toolbar">
+                <div class="field">
+                    <label for="searchInput">Search</label>
+                    <input id="searchInput" class="input" type="search" placeholder="Search item, group, or person">
+                </div>
+                <div class="field">
+                    <label for="focusPersonSelect">Jump to person</label>
+                    <select id="focusPersonSelect" class="select">
+                        <option value="all">All people</option>
+                    </select>
+                </div>
+                <div class="toolbar-actions">
+                    <button class="btn btn-secondary" id="refreshButton" type="button">Refresh</button>
+                    <button class="btn btn-primary" id="configureButton" type="button">Configure</button>
+                </div>
+                <div class="meta-row">
+                    <span class="meta-chip">Drag items onto another person</span>
+                    <span class="meta-chip">Click an item to change person</span>
+                </div>
+            </section>
+
+            <section class="board-shell">
+                <div id="loadingState" class="loading-state">
+                    <div>
+                        <div class="loading-ring"></div>
+                        <h2>Loading materials</h2>
+                        <p>Fetching rows from the Google Sheet and building the person board.</p>
+                    </div>
+                </div>
+
+                <div id="errorState" class="error-state hidden"></div>
+                <div id="emptyState" class="empty-state hidden">
+                    <h2>No matching items</h2>
+                    <p>Try a different search, or refresh after changing the sheet.</p>
+                </div>
+
+                <div id="board" class="board hidden"></div>
+            </section>
+        </div>
+
+        <div id="toastStack" class="toast-stack"></div>
+
+        <div id="editOverlay" class="overlay hidden" aria-hidden="true">
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+                <div class="modal-header">
+                    <h2 id="editModalTitle" class="modal-title">Change person</h2>
+                    <p id="editModalSubtitle" class="modal-subtitle"></p>
+                </div>
+                <div class="modal-body">
+                    <div class="stack">
+                        <div class="field">
+                            <label>Item</label>
+                            <div id="editItemSummary" class="config-note"></div>
+                        </div>
+                        <div class="modal-grid">
+                            <div class="field">
+                                <label for="personSelect">Move to existing person</label>
+                                <select id="personSelect" class="select">
+                                    <option value="">Select a person</option>
+                                </select>
+                            </div>
+                            <div class="field">
+                                <label for="newPersonInput">Or type a new person name</label>
+                                <input id="newPersonInput" class="input" type="text" placeholder="Enter new person name">
+                            </div>
+                        </div>
+                        <div class="help-text">
+                            Use the dropdown to move the item to an existing person, or type a new name to create a new person assignment.
+                            The sheet updates immediately after save.
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-ghost" id="cancelEditButton" type="button">Cancel</button>
+                        <button class="btn btn-primary" id="saveEditButton" type="button">Save change</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="configOverlay" class="overlay hidden" aria-hidden="true">
+            <div class="modal" role="dialog" aria-modal="true" aria-labelledby="configModalTitle">
+                <div class="modal-header">
+                    <h2 id="configModalTitle" class="modal-title">Connect your sheet</h2>
+                    <p class="modal-subtitle">Paste the deployed Apps Script web app URL that reads and writes the Isha KC materials sheet.</p>
+                </div>
+                <div class="modal-body">
+                    <div class="modal-grid">
+                        <div class="field">
+                            <label for="sheetIdInput">Google Sheet ID</label>
+                            <input id="sheetIdInput" class="input" type="text" placeholder="Sheet ID">
+                        </div>
+                        <div class="field">
+                            <label for="sheetNameInput">Sheet tab name (optional)</label>
+                            <input id="sheetNameInput" class="input" type="text" placeholder="Leave blank to use the first tab">
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label for="appsScriptUrlInput">Apps Script Web App URL</label>
+                        <input id="appsScriptUrlInput" class="input" type="text" placeholder="https://script.google.com/macros/s/.../exec">
+                    </div>
+                    <div class="config-note">
+                        The sheet needs the columns Item, Group, Person, and As of date. The board uses the Item column as the card label and updates only the Person value when you edit or drag an item.
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-ghost" id="closeConfigButton" type="button">Close</button>
+                        <button class="btn btn-primary" id="saveConfigButton" type="button">Save configuration</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            const STORAGE_KEYS = {
+                sheetId: 'isha_kc_materials_sheetId',
+                appsScriptUrl: 'isha_kc_materials_appsScriptUrl',
+                sheetName: 'isha_kc_materials_sheetName'
+            };
+
+            const DEFAULT_SHEET_ID = '19yApUs-AasdcS1oerxjN-OsngO9vhkavaxXKUjqpuUY';
+
+            const state = {
+                rows: [],
+                persons: [],
+                search: '',
+                focusPerson: 'all',
+                loading: true,
+                selectedRow: null,
+                configOpen: false,
+                jsonpCounter: 0,
+                draggingRowIndex: null,
+                editPersonOptions: []
+            };
+
+            const config = {
+                sheetId: localStorage.getItem(STORAGE_KEYS.sheetId) || DEFAULT_SHEET_ID,
+                appsScriptUrl: localStorage.getItem(STORAGE_KEYS.appsScriptUrl) || '',
+                sheetName: localStorage.getItem(STORAGE_KEYS.sheetName) || ''
+            };
+
+            const elements = {};
+
+            document.addEventListener('DOMContentLoaded', bootstrap);
+
+            function bootstrap() {
+                bindElements();
+                bindEvents();
+                syncConfigUi();
+                if (!config.appsScriptUrl) {
+                    openConfigModal();
+                }
+                loadMaterials();
+            }
+
+            function bindElements() {
+                elements.loadingState = document.getElementById('loadingState');
+                elements.errorState = document.getElementById('errorState');
+                elements.emptyState = document.getElementById('emptyState');
+                elements.board = document.getElementById('board');
+                elements.searchInput = document.getElementById('searchInput');
+                elements.focusPersonSelect = document.getElementById('focusPersonSelect');
+                elements.refreshButton = document.getElementById('refreshButton');
+                elements.configureButton = document.getElementById('configureButton');
+                elements.itemCount = document.getElementById('itemCount');
+                elements.personCount = document.getElementById('personCount');
+                elements.groupCount = document.getElementById('groupCount');
+                elements.visibleCount = document.getElementById('visibleCount');
+                elements.activeSheetLabel = document.getElementById('activeSheetLabel');
+                elements.activeUpdatedLabel = document.getElementById('activeUpdatedLabel');
+                elements.toastStack = document.getElementById('toastStack');
+
+                elements.editOverlay = document.getElementById('editOverlay');
+                elements.editItemSummary = document.getElementById('editItemSummary');
+                elements.editModalSubtitle = document.getElementById('editModalSubtitle');
+                elements.personSelect = document.getElementById('personSelect');
+                elements.newPersonInput = document.getElementById('newPersonInput');
+                elements.cancelEditButton = document.getElementById('cancelEditButton');
+                elements.saveEditButton = document.getElementById('saveEditButton');
+
+                elements.configOverlay = document.getElementById('configOverlay');
+                elements.sheetIdInput = document.getElementById('sheetIdInput');
+                elements.sheetNameInput = document.getElementById('sheetNameInput');
+                elements.appsScriptUrlInput = document.getElementById('appsScriptUrlInput');
+                elements.closeConfigButton = document.getElementById('closeConfigButton');
+                elements.saveConfigButton = document.getElementById('saveConfigButton');
+            }
+
+            function bindEvents() {
+                elements.searchInput.addEventListener('input', () => {
+                    state.search = elements.searchInput.value.trim();
+                    render();
+                });
+
+                elements.focusPersonSelect.addEventListener('change', () => {
+                    state.focusPerson = elements.focusPersonSelect.value;
+                    render();
+                });
+
+                elements.refreshButton.addEventListener('click', () => loadMaterials());
+                elements.configureButton.addEventListener('click', () => openConfigModal());
+                elements.closeConfigButton.addEventListener('click', () => closeConfigModal());
+                elements.saveConfigButton.addEventListener('click', saveConfiguration);
+                elements.cancelEditButton.addEventListener('click', closeEditModal);
+                elements.saveEditButton.addEventListener('click', saveEdit);
+
+                elements.personSelect.addEventListener('change', () => {
+                    if (elements.personSelect.value === '__new__') {
+                        elements.newPersonInput.focus();
+                    }
+                });
+
+                elements.newPersonInput.addEventListener('input', () => {
+                    if (elements.newPersonInput.value.trim()) {
+                        elements.personSelect.value = '__new__';
+                    }
+                });
+
+                elements.editOverlay.addEventListener('click', (event) => {
+                    if (event.target === elements.editOverlay) {
+                        closeEditModal();
+                    }
+                });
+
+                elements.configOverlay.addEventListener('click', (event) => {
+                    if (event.target === elements.configOverlay) {
+                        closeConfigModal();
+                    }
+                });
+
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        if (!elements.editOverlay.classList.contains('hidden')) {
+                            closeEditModal();
+                        }
+                        if (!elements.configOverlay.classList.contains('hidden')) {
+                            closeConfigModal();
+                        }
+                    }
+                });
+            }
+
+            function syncConfigUi() {
+                elements.sheetIdInput.value = config.sheetId;
+                elements.sheetNameInput.value = config.sheetName;
+                elements.appsScriptUrlInput.value = config.appsScriptUrl;
+                elements.activeSheetLabel.textContent = config.sheetName ? `Sheet: ${config.sheetName}` : 'First tab';
+            }
+
+            function buildAppsScriptUrl(params) {
+                const url = new URL(config.appsScriptUrl);
+                Object.entries(params).forEach(([key, value]) => {
+                    if (value !== undefined && value !== null && String(value).length > 0) {
+                        url.searchParams.set(key, value);
+                    }
+                });
+                return url.toString();
+            }
+
+            function jsonpRequest(params) {
+                return new Promise((resolve, reject) => {
+                    const callbackName = `ishaMaterialsCb_${Date.now()}_${state.jsonpCounter++}`;
+                    const script = document.createElement('script');
+
+                    const timeoutId = window.setTimeout(() => {
+                        cleanup();
+                        reject(new Error('Request timed out'));
+                    }, 15000);
+
+                    function cleanup() {
+                        delete window[callbackName];
+                        window.clearTimeout(timeoutId);
+                        if (script.parentNode) {
+                            script.parentNode.removeChild(script);
+                        }
+                    }
+
+                    window[callbackName] = (data) => {
+                        cleanup();
+                        resolve(data);
+                    };
+
+                    script.onerror = () => {
+                        cleanup();
+                        reject(new Error('Unable to reach Apps Script endpoint'));
+                    };
+
+                    script.src = buildAppsScriptUrl({
+                        ...params,
+                        callback: callbackName
+                    });
+
+                    document.body.appendChild(script);
+                });
+            }
+
+            async function loadMaterials() {
+                if (!config.appsScriptUrl) {
+                    setLoading(false);
+                    openConfigModal();
+                    return;
+                }
+
+                setLoading(true);
+                clearError();
+
+                try {
+                    const response = await jsonpRequest({
+                        action: 'getMaterials',
+                        sheetId: config.sheetId,
+                        sheetName: config.sheetName
+                    });
+
+                    if (!response.success) {
+                        throw new Error(response.error || 'Failed to load materials');
+                    }
+
+                    state.rows = Array.isArray(response.data) ? response.data : [];
+                    state.persons = normalizePersons(response.people, state.rows);
+                    state.editPersonOptions = state.persons.slice();
+                    updateStats();
+                    populatePersonControls();
+                    render();
+                    elements.activeUpdatedLabel.textContent = 'Loaded';
+                } catch (error) {
+                    showError(error.message || 'Unable to load materials');
+                    elements.activeUpdatedLabel.textContent = 'Offline';
+                } finally {
+                    setLoading(false);
+                }
+            }
+
+            function normalizePersons(list, rows) {
+                const values = new Set();
+                (Array.isArray(list) ? list : []).forEach((value) => {
+                    const name = normalizePerson(value);
+                    if (name) {
+                        values.add(name);
+                    }
+                });
+                rows.forEach((row) => {
+                    const name = normalizePerson(row.person);
+                    if (name) {
+                        values.add(name);
+                    }
+                });
+                return Array.from(values).sort((left, right) => compareLabels(left, right));
+            }
+
+            function populatePersonControls() {
+                const selectOptions = ['<option value="all">All people</option>'];
+                state.persons.forEach((person) => {
+                    selectOptions.push(`<option value="${escapeHtml(person)}">${escapeHtml(person)}</option>`);
+                });
+                elements.focusPersonSelect.innerHTML = selectOptions.join('');
+                elements.focusPersonSelect.value = state.focusPerson;
+
+                const editOptions = ['<option value="">Select a person</option>'];
+                state.persons.forEach((person) => {
+                    editOptions.push(`<option value="${escapeHtml(person)}">${escapeHtml(person)}</option>`);
+                });
+                editOptions.push('<option value="__new__">Create new person...</option>');
+                elements.personSelect.innerHTML = editOptions.join('');
+            }
+
+            function render() {
+                const grouped = buildHierarchy(applyFilters(state.rows));
+                const visiblePeople = grouped.length;
+                const visibleItems = grouped.reduce((sum, person) => sum + person.items.length, 0);
+
+                elements.visibleCount.textContent = visibleItems;
+                elements.board.innerHTML = '';
+
+                if (state.loading) {
+                    elements.loadingState.classList.remove('hidden');
+                    elements.errorState.classList.add('hidden');
+                    elements.emptyState.classList.add('hidden');
+                    elements.board.classList.add('hidden');
+                    return;
+                }
+
+                elements.loadingState.classList.add('hidden');
+                elements.errorState.classList.add('hidden');
+
+                if (!visibleItems) {
+                    elements.emptyState.classList.remove('hidden');
+                    elements.board.classList.add('hidden');
+                    elements.emptyState.querySelector('h2').textContent = state.search ? 'No matching items' : 'No items loaded';
+                    elements.emptyState.querySelector('p').textContent = state.search
+                        ? 'Try a broader search, or clear the filter to see the full board.'
+                        : 'Reload the sheet data or check the Apps Script configuration.';
+                    return;
+                }
+
+                elements.emptyState.classList.add('hidden');
+                elements.board.classList.remove('hidden');
+
+                grouped.forEach((personGroup) => {
+                    elements.board.appendChild(renderPersonCard(personGroup));
+                });
+
+                if (state.focusPerson !== 'all') {
+                    const activeCard = elements.board.querySelector(`[data-person-card="${cssEscape(state.focusPerson)}"]`);
+                    if (activeCard) {
+                        activeCard.scrollIntoView({ block: 'center', behavior: 'smooth' });
+                    }
+                }
+
+                elements.activeSheetLabel.textContent = config.sheetName ? `Sheet: ${config.sheetName}` : 'First tab';
+                document.title = `Isha KC Materials Board (${visiblePeople} people)`;
+            }
+
+            function buildHierarchy(rows) {
+                const personMap = new Map();
+                rows.forEach((row) => {
+                    const person = normalizePerson(row.person);
+                    const group = normalizeGroup(row.group);
+                    const entry = personMap.get(person) || {
+                        person,
+                        rows: [],
+                        groups: new Map()
+                    };
+                    entry.rows.push(row);
+                    const groupRows = entry.groups.get(group) || [];
+                    groupRows.push(row);
+                    entry.groups.set(group, groupRows);
+                    personMap.set(person, entry);
+                });
+
+                return Array.from(personMap.values())
+                    .sort((left, right) => compareLabels(left.person, right.person))
+                    .map((entry) => ({
+                        person: entry.person,
+                        rows: entry.rows.sort(compareRows),
+                        groups: Array.from(entry.groups.entries())
+                            .sort((left, right) => compareLabels(left[0], right[0]))
+                            .map(([groupName, groupRows]) => ({
+                                groupName,
+                                rows: groupRows.sort(compareRows)
+                            }))
+                    }));
+            }
+
+            function applyFilters(rows) {
+                const query = normalizeText(state.search);
+                const focusPerson = state.focusPerson;
+
+                return rows.filter((row) => {
+                    const rowPerson = normalizePerson(row.person);
+
+                    if (focusPerson !== 'all' && rowPerson !== focusPerson) {
+                        return false;
+                    }
+
+                    if (!query) {
+                        return true;
+                    }
+
+                    const haystack = [row.item, row.group, row.person, row.asOfDate]
+                        .map(normalizeText)
+                        .join(' ');
+                    return haystack.includes(query);
+                });
+            }
+
+            function renderPersonCard(personGroup) {
+                const personRows = personGroup.rows;
+                const groupCount = personGroup.groups.length;
+                const singleRows = [];
+                const multiGroups = [];
+
+                personGroup.groups.forEach((group) => {
+                    if (group.rows.length > 1) {
+                        multiGroups.push(group);
+                    } else {
+                        singleRows.push(group.rows[0]);
+                    }
+                });
+
+                const card = document.createElement('article');
+                card.className = 'person-card';
+                card.dataset.personCard = personGroup.person;
+                card.addEventListener('dragover', (event) => {
+                    event.preventDefault();
+                    card.classList.add('drag-over');
+                });
+                card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+                card.addEventListener('drop', async (event) => {
+                    event.preventDefault();
+                    card.classList.remove('drag-over');
+                    if (state.draggingRowIndex === null) {
+                        return;
+                    }
+                    await moveRowPerson(state.draggingRowIndex, personGroup.person);
+                });
+
+                const header = document.createElement('div');
+                header.className = 'person-header';
+                header.innerHTML = `
+                    <div class="person-title">
+                        <div class="person-name">${escapeHtml(personGroup.person)}</div>
+                        <div class="person-subtitle">${personRows.length} item${personRows.length === 1 ? '' : 's'} assigned here</div>
+                    </div>
+                    <div class="person-badges">
+                        <span class="badge badge-soft">${personRows.length} item${personRows.length === 1 ? '' : 's'}</span>
+                        <span class="badge badge-muted">${groupCount} group${groupCount === 1 ? '' : 's'}</span>
+                    </div>
+                `;
+                card.appendChild(header);
+
+                const body = document.createElement('div');
+                body.className = 'person-body';
+
+                if (!personRows.length) {
+                    const empty = document.createElement('div');
+                    empty.className = 'person-empty';
+                    empty.textContent = 'No items in this person yet.';
+                    body.appendChild(empty);
+                }
+
+                multiGroups.forEach((group) => {
+                    body.appendChild(renderGroupBox(group.groupName, group.rows));
+                });
+
+                if (singleRows.length) {
+                    const singles = document.createElement('div');
+                    singles.className = 'single-items';
+                    singleRows.forEach((row) => {
+                        singles.appendChild(renderSingleItem(row, true));
+                    });
+                    body.appendChild(singles);
+                }
+
+                card.appendChild(body);
+                return card;
+            }
+
+            function renderGroupBox(groupName, rows) {
+                const box = document.createElement('section');
+                box.className = 'group-box';
+
+                const header = document.createElement('div');
+                header.className = 'group-header';
+                header.innerHTML = `<span>${escapeHtml(groupName)}</span><span>${rows.length} items</span>`;
+
+                const body = document.createElement('div');
+                body.className = 'group-body';
+                rows.forEach((row) => {
+                    body.appendChild(renderItemCard(row, false));
+                });
+
+                box.appendChild(header);
+                box.appendChild(body);
+                return box;
+            }
+
+            function renderSingleItem(row, showGroupChip) {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'single-item-row';
+                wrapper.appendChild(renderItemCard(row, showGroupChip));
+                return wrapper;
+            }
+
+            function renderItemCard(row, showGroupChip) {
+                const card = document.createElement('button');
+                card.type = 'button';
+                card.className = 'item-card';
+                card.draggable = true;
+                card.dataset.rowIndex = row.rowIndex;
+                card.dataset.person = normalizePerson(row.person);
+
+                card.addEventListener('click', () => openEditModal(row));
+                card.addEventListener('dragstart', (event) => {
+                    state.draggingRowIndex = row.rowIndex;
+                    card.classList.add('is-dragging');
+                    event.dataTransfer.effectAllowed = 'move';
+                    event.dataTransfer.setData('text/plain', String(row.rowIndex));
+                });
+                card.addEventListener('dragend', () => {
+                    state.draggingRowIndex = null;
+                    card.classList.remove('is-dragging');
+                });
+
+                const dragHandle = document.createElement('div');
+                dragHandle.className = 'item-drag-handle';
+                dragHandle.textContent = '⋮⋮';
+
+                const main = document.createElement('div');
+                main.className = 'item-main';
+
+                const itemName = document.createElement('div');
+                itemName.className = 'item-name';
+                itemName.textContent = row.item || '(Untitled item)';
+
+                const meta = document.createElement('div');
+                meta.className = 'item-meta';
+                if (showGroupChip) {
+                    const groupChip = document.createElement('span');
+                    groupChip.className = 'item-chip';
+                    groupChip.textContent = row.group || 'Ungrouped';
+                    meta.appendChild(groupChip);
+                }
+                if (row.asOfDate) {
+                    const dateChip = document.createElement('span');
+                    dateChip.className = 'item-chip';
+                    dateChip.textContent = `As of ${row.asOfDate}`;
+                    meta.appendChild(dateChip);
+                }
+
+                main.appendChild(itemName);
+                if (meta.childElementCount) {
+                    main.appendChild(meta);
+                }
+
+                const actions = document.createElement('div');
+                actions.className = 'item-actions';
+                const button = document.createElement('span');
+                button.className = 'item-mini-btn';
+                button.textContent = 'Change person';
+                actions.appendChild(button);
+
+                card.appendChild(dragHandle);
+                card.appendChild(main);
+                card.appendChild(actions);
+                return card;
+            }
+
+            function compareRows(left, right) {
+                return compareLabels(left.item || '', right.item || '');
+            }
+
+            function compareLabels(left, right) {
+                const a = normalizeText(left);
+                const b = normalizeText(right);
+                if (a === 'unassigned') {
+                    return 1;
+                }
+                if (b === 'unassigned') {
+                    return -1;
+                }
+                return a.localeCompare(b, undefined, { sensitivity: 'base' });
+            }
+
+            function normalizeText(value) {
+                return String(value || '').toLowerCase().trim().replace(/\s+/g, ' ');
+            }
+
+            function normalizePerson(value) {
+                const name = String(value || '').trim();
+                return name || 'Unassigned';
+            }
+
+            function normalizeGroup(value) {
+                const name = String(value || '').trim();
+                return name || 'Ungrouped';
+            }
+
+            function escapeHtml(value) {
+                return String(value || '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#39;');
+            }
+
+            function cssEscape(value) {
+                if (window.CSS && typeof window.CSS.escape === 'function') {
+                    return window.CSS.escape(value);
+                }
+                return String(value).replace(/[^a-zA-Z0-9_-]/g, '\\$&');
+            }
+
+            function openEditModal(row) {
+                state.selectedRow = row;
+                elements.editModalSubtitle.textContent = `Move this item from ${normalizePerson(row.person)} to another person.`;
+                elements.editItemSummary.textContent = `${row.item || '(Untitled item)'} · ${row.group || 'Ungrouped'} · ${row.asOfDate || 'No date'}`;
+                elements.personSelect.value = row.person && state.persons.includes(row.person) ? row.person : '';
+                elements.newPersonInput.value = '';
+                if (row.person && !state.persons.includes(row.person)) {
+                    elements.newPersonInput.value = row.person;
+                    elements.personSelect.value = '__new__';
+                }
+                openOverlay(elements.editOverlay);
+                elements.newPersonInput.focus();
+            }
+
+            function closeEditModal() {
+                state.selectedRow = null;
+                closeOverlay(elements.editOverlay);
+            }
+
+            function openConfigModal() {
+                syncConfigUi();
+                openOverlay(elements.configOverlay);
+            }
+
+            function closeConfigModal() {
+                closeOverlay(elements.configOverlay);
+            }
+
+            function openOverlay(overlay) {
+                overlay.classList.remove('hidden');
+                overlay.setAttribute('aria-hidden', 'false');
+                state.configOpen = overlay === elements.configOverlay;
+            }
+
+            function closeOverlay(overlay) {
+                overlay.classList.add('hidden');
+                overlay.setAttribute('aria-hidden', 'true');
+                state.configOpen = false;
+            }
+
+            async function saveEdit() {
+                if (!state.selectedRow) {
+                    return;
+                }
+
+                const selectedExisting = elements.personSelect.value;
+                const typedValue = elements.newPersonInput.value.trim();
+                const nextPerson = typedValue || (selectedExisting && selectedExisting !== '__new__' ? selectedExisting : '');
+
+                if (!nextPerson) {
+                    showToast('Pick an existing person or type a new name.', 'Person required');
+                    return;
+                }
+
+                await savePersonChange(state.selectedRow.rowIndex, nextPerson, state.selectedRow.item);
+            }
+
+            async function moveRowPerson(rowIndex, personName) {
+                await savePersonChange(rowIndex, personName, 'drag-and-drop');
+            }
+
+            async function savePersonChange(rowIndex, personName, sourceLabel) {
+                try {
+                    elements.saveEditButton.disabled = true;
+                    elements.saveEditButton.textContent = 'Saving...';
+
+                    const response = await jsonpRequest({
+                        action: 'updatePerson',
+                        sheetId: config.sheetId,
+                        sheetName: config.sheetName,
+                        rowIndex: rowIndex,
+                        person: personName
+                    });
+
+                    if (!response.success) {
+                        throw new Error(response.error || 'Update failed');
+                    }
+
+                    closeEditModal();
+                    showToast(`${sourceLabel === 'drag-and-drop' ? 'Moved item' : 'Updated item'} to ${personName}.`, 'Saved');
+                    await loadMaterials();
+                } catch (error) {
+                    showToast(error.message || 'Unable to update the person.', 'Update failed');
+                } finally {
+                    elements.saveEditButton.disabled = false;
+                    elements.saveEditButton.textContent = 'Save change';
+                }
+            }
+
+            function saveConfiguration() {
+                const nextSheetId = extractSheetId(elements.sheetIdInput.value.trim());
+                const nextScriptUrl = elements.appsScriptUrlInput.value.trim();
+                const nextSheetName = elements.sheetNameInput.value.trim();
+
+                if (!nextSheetId || !nextScriptUrl) {
+                    showToast('Add both the Sheet ID and Apps Script URL.', 'Configuration needed');
+                    return;
+                }
+
+                config.sheetId = nextSheetId;
+                config.appsScriptUrl = nextScriptUrl;
+                config.sheetName = nextSheetName;
+
+                localStorage.setItem(STORAGE_KEYS.sheetId, config.sheetId);
+                localStorage.setItem(STORAGE_KEYS.appsScriptUrl, config.appsScriptUrl);
+                localStorage.setItem(STORAGE_KEYS.sheetName, config.sheetName);
+
+                syncConfigUi();
+                closeConfigModal();
+                loadMaterials();
+            }
+
+            function extractSheetId(value) {
+                const match = String(value || '').match(/\/d\/([a-zA-Z0-9-_]+)/);
+                return match ? match[1] : String(value || '').trim();
+            }
+
+            function updateStats() {
+                elements.itemCount.textContent = state.rows.length;
+                elements.personCount.textContent = state.persons.length;
+                elements.groupCount.textContent = uniqueCount(state.rows.map((row) => normalizeGroup(row.group)));
+            }
+
+            function uniqueCount(values) {
+                return new Set(values.filter(Boolean)).size;
+            }
+
+            function setLoading(isLoading) {
+                state.loading = isLoading;
+                elements.loadingState.classList.toggle('hidden', !isLoading);
+                if (isLoading) {
+                    elements.board.classList.add('hidden');
+                    elements.emptyState.classList.add('hidden');
+                    elements.errorState.classList.add('hidden');
+                }
+            }
+
+            function showError(message) {
+                elements.errorState.innerHTML = `
+                    <h2>Could not load materials</h2>
+                    <p>${escapeHtml(message)}</p>
+                `;
+                elements.errorState.classList.remove('hidden');
+                elements.board.classList.add('hidden');
+                elements.emptyState.classList.add('hidden');
+            }
+
+            function clearError() {
+                elements.errorState.classList.add('hidden');
+                elements.errorState.innerHTML = '';
+            }
+
+            function showToast(message, title) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.innerHTML = `<strong>${escapeHtml(title || 'Update')}</strong><p>${escapeHtml(message)}</p>`;
+                elements.toastStack.appendChild(toast);
+
+                window.setTimeout(() => {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateY(8px)';
+                    window.setTimeout(() => toast.remove(), 220);
+                }, 2800);
+            }
+        </script>
+    </body>
+    </html>
+    -->
+<!--
+            mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent 95%);
+        }
+
+        button, input, select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .app-shell {
+            position: relative;
+            z-index: 1;
+            width: min(1400px, calc(100vw - 32px));
+            margin: 18px auto 28px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .hero,
+        .panel,
+        .board-panel {
+            background: var(--panel);
+            backdrop-filter: blur(18px);
+            border: 1px solid rgba(255, 255, 255, 0.55);
+            box-shadow: var(--shadow);
+            border-radius: var(--radius-xl);
+        }
+
+        .hero {
+            padding: 28px;
+            display: grid;
+            gap: 22px;
+        }
+
+        .hero-top {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .eyebrow {
+            font-size: 12px;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--accent-strong);
+            font-weight: 800;
+        }
+
+        .hero h1 {
+            margin: 8px 0 8px;
+            font-family: 'Fraunces', serif;
+            font-size: clamp(34px, 5vw, 58px);
+            line-height: 0.98;
+            letter-spacing: -0.04em;
+        }
+
+        .hero p {
+            margin: 0;
+            max-width: 860px;
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 15px;
+        }
+
+        .hero-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .chip,
+        .ghost-btn,
+        .primary-btn,
+        .secondary-btn {
+            border: 0;
+            border-radius: 999px;
+            padding: 11px 16px;
+            font-weight: 700;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+        }
+
+        .chip {
+            background: rgba(255, 255, 255, 0.78);
+            color: var(--accent-strong);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .ghost-btn {
+            background: transparent;
+            color: var(--accent-strong);
+            border: 1px solid var(--line);
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+            color: #fff;
+            box-shadow: 0 14px 30px rgba(22, 122, 106, 0.24);
+        }
+
+        .secondary-btn {
+            background: #eef5f2;
+            color: var(--accent-strong);
+        }
+
+        .chip:hover,
+        .ghost-btn:hover,
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .hero-stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .stat-label {
+            display: block;
+            color: var(--muted);
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.04em;
+        }
+
+        .stat-note {
+            margin-top: 6px;
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .panel {
+            padding: 18px 20px;
+        }
+
+        .toolbar,
+        .connection-grid,
+        .modal-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .toolbar {
+            grid-template-columns: minmax(260px, 2fr) minmax(220px, 1fr) auto auto;
+            align-items: end;
+        }
+
+        .field label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 12px;
+            color: var(--muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 800;
+        }
+
+        .field input,
+        .field select {
+            width: 100%;
+            border: 1px solid rgba(34, 44, 39, 0.12);
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 16px;
+            padding: 13px 14px;
+            outline: none;
+            color: var(--text);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: rgba(22, 122, 106, 0.55);
+            box-shadow: 0 0 0 4px rgba(22, 122, 106, 0.12);
+        }
+
+        .toolbar-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .connection-panel {
+            display: grid;
+            gap: 14px;
+        }
+
+        .connection-head {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .connection-title {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .connection-hint {
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 4px;
+        }
+
+        .connection-grid {
+            grid-template-columns: minmax(250px, 1.1fr) minmax(260px, 1.6fr) minmax(180px, 0.8fr) auto;
+        }
+
+        .connection-links {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .connection-links a {
+            color: var(--accent-strong);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .board-panel {
+            padding: 18px;
+        }
+
+        .board-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .board-title {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .board-subtitle {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 5px;
+        }
+
+        .board-status {
+            color: var(--muted);
+            font-size: 13px;
+            text-align: right;
+        }
+
+        .person-board {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 14px;
+        }
+
+        .person-card {
+            background: rgba(255, 255, 255, 0.94);
+            border: 1px solid var(--line);
+            border-radius: 24px;
+            padding: 16px;
+            display: grid;
+            gap: 14px;
+            box-shadow: var(--shadow-soft);
+            min-height: 120px;
+            transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .person-card.drag-over {
+            transform: translateY(-2px);
+            border-color: rgba(22, 122, 106, 0.5);
+            box-shadow: 0 18px 36px rgba(22, 122, 106, 0.14);
+        }
+
+        .person-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .person-name {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .person-meta {
+            color: var(--muted);
+            font-size: 13px;
+            margin-top: 5px;
+            line-height: 1.5;
+        }
+
+        .person-badge {
+            padding: 7px 11px;
+            border-radius: 999px;
+            background: var(--accent-soft);
+            color: var(--accent-strong);
+            font-size: 12px;
+            font-weight: 800;
+            white-space: nowrap;
+        }
+
+        .person-body {
+            display: grid;
+            gap: 10px;
+        }
+
+        .group-box {
+            border: 1px solid rgba(34, 44, 39, 0.1);
+            border-radius: 18px;
+            background: linear-gradient(180deg, rgba(250, 251, 249, 0.96), rgba(244, 248, 246, 0.96));
+            overflow: hidden;
+        }
+
+        .group-head {
+            padding: 12px 14px 10px;
+            border-bottom: 1px solid rgba(34, 44, 39, 0.08);
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .group-name {
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .group-count {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .group-items {
+            padding: 10px;
+            display: grid;
+            gap: 8px;
+        }
+
+        .item-card {
+            border: 1px solid rgba(34, 44, 39, 0.1);
+            background: var(--card);
+            border-radius: 16px;
+            padding: 13px 14px;
+            display: grid;
+            gap: 9px;
+            text-align: left;
+            width: 100%;
+            box-shadow: 0 6px 18px rgba(31, 46, 38, 0.06);
+            transition: transform 0.18s ease, box-shadow 0.18s ease, border-color 0.18s ease;
+        }
+
+        .item-card:hover {
+            transform: translateY(-1px);
+            border-color: rgba(22, 122, 106, 0.3);
+            box-shadow: 0 12px 26px rgba(31, 46, 38, 0.11);
+        }
+
+        .item-card:focus-visible,
+        .item-card.dragging {
+            outline: none;
+            border-color: rgba(22, 122, 106, 0.55);
+            box-shadow: 0 0 0 4px rgba(22, 122, 106, 0.14);
+        }
+
+        .item-card-main {
+            display: grid;
+            gap: 6px;
+        }
+
+        .item-title {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            line-height: 1.35;
+        }
+
+        .item-meta {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 9px;
+            border-radius: 999px;
+            background: rgba(22, 122, 106, 0.08);
+            color: var(--accent-strong);
+        }
+
+        .item-action {
+            color: var(--accent-strong);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .single-items {
+            display: grid;
+            gap: 8px;
+        }
+
+        .empty-state,
+        .loading-state,
+        .error-state {
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            border: 1px dashed rgba(34, 44, 39, 0.18);
+            background: rgba(255, 255, 255, 0.72);
+            color: var(--muted);
+            line-height: 1.6;
+        }
+
+        .error-state {
+            border-style: solid;
+            border-color: rgba(179, 106, 0, 0.22);
+            background: rgba(255, 247, 232, 0.9);
+            color: #7e4a00;
+        }
+
+        .loading-state {
+            color: var(--accent-strong);
+        }
+
+        .status-line {
+            min-height: 24px;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+        }
+
+        .status-line.error {
+            color: #8b4e00;
+        }
+
+        .modal-backdrop {
+            position: fixed;
+            inset: 0;
+            background: rgba(17, 25, 21, 0.56);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 18px;
+            z-index: 20;
+        }
+
+        .modal-backdrop.open {
+            display: flex;
+        }
+
+        .modal {
+            width: min(720px, 100%);
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            box-shadow: 0 34px 80px rgba(11, 17, 14, 0.35);
+            padding: 22px;
+            display: grid;
+            gap: 16px;
+        }
+
+        .modal-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .modal-title {
+            font-size: 22px;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+        }
+
+        .modal-subtitle {
+            color: var(--muted);
+            margin-top: 6px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .icon-btn {
+            border: 0;
+            background: rgba(34, 44, 39, 0.08);
+            color: var(--text);
+            width: 40px;
+            height: 40px;
+            border-radius: 999px;
+            font-size: 20px;
+            font-weight: 700;
+        }
+
+        .modal-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .helper-text {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            bottom: 20px;
+            transform: translateX(-50%) translateY(12px);
+            background: rgba(23, 32, 27, 0.95);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 999px;
+            box-shadow: 0 16px 40px rgba(12, 17, 14, 0.28);
+            font-size: 13px;
+            font-weight: 700;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            z-index: 30;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        @media (max-width: 1000px) {
+            .hero-stats,
+            .toolbar,
+            .connection-grid,
+            .modal-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .hero-top,
+            .connection-head,
+            .board-head {
+                align-items: flex-start;
+            }
+
+            .toolbar-actions,
+            .board-status {
+                justify-content: flex-start;
+                text-align: left;
+            }
+        }
+
+        @media (max-width: 720px) {
+            .app-shell {
+                width: calc(100vw - 20px);
+                margin: 10px auto 20px;
+            }
+
+            .hero,
+            .panel,
+            .board-panel,
+            .modal {
+                border-radius: 22px;
+            }
+
+            .hero,
+            .panel,
+            .board-panel {
+                padding: 16px;
+            }
+
+            .hero-stats,
+            .toolbar,
+            .connection-grid,
+            .modal-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .person-board {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h1 {
+                font-size: 34px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="app-shell">
+        <section class="hero">
+            <div class="hero-top">
+                <div>
+                    <div class="eyebrow">Isha KC Materials</div>
+                    <h1>Keep the material list organized by person, without losing the group structure.</h1>
+                    <p>
+                        Each person appears as the outer card. Groups are nested only when they contain more than one item.
+                        Single-item groups stay flat so the page stays easy to scan, and every item can be clicked or dragged to a new person.
+                    </p>
+                </div>
+                <div class="hero-actions">
+                    <button class="chip" id="refreshButton" type="button">Refresh data</button>
+                    <button class="ghost-btn" id="showConnectionButton" type="button">Connection settings</button>
+                </div>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat-card">
+                    <span class="stat-label">Visible items</span>
+                    <div class="stat-value" id="visibleCount">0</div>
+                    <div class="stat-note" id="visibleNote">Loading materials</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">People</span>
+                    <div class="stat-value" id="personCount">0</div>
+                    <div class="stat-note">Cards you can drop items onto</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Groups</span>
+                    <div class="stat-value" id="groupCount">0</div>
+                    <div class="stat-note">Nested only when a group has multiple items</div>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Singles</span>
+                    <div class="stat-value" id="singleCount">0</div>
+                    <div class="stat-note">One-item groups shown directly under the person</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel connection-panel" id="connectionPanel">
+            <div class="connection-head">
+                <div>
+                    <div class="connection-title">Connection</div>
+                    <div class="connection-hint">
+                        Paste the Apps Script web app URL for the spreadsheet that contains Item, Group, Person, and As of date.
+                        The sheet ID is already filled from your spreadsheet link.
+                    </div>
+                </div>
+                <div class="connection-links">
+                    <a id="sheetLink" href="#" target="_blank" rel="noreferrer">Open sheet</a>
+                    <span class="chip" id="connectionStateChip">Not connected</span>
+                </div>
+            </div>
+
+            <div class="connection-grid">
+                <div class="field">
+                    <label for="sheetIdInput">Sheet ID</label>
+                    <input id="sheetIdInput" type="text" autocomplete="off">
+                </div>
+                <div class="field">
+                    <label for="appsScriptUrlInput">Apps Script web app URL</label>
+                    <input id="appsScriptUrlInput" type="text" autocomplete="off" placeholder="https://script.google.com/macros/s/.../exec">
+                </div>
+                <div class="field">
+                    <label for="sheetNameInput">Sheet tab name</label>
+                    <input id="sheetNameInput" type="text" autocomplete="off" placeholder="Optional">
+                </div>
+                <div class="toolbar-actions">
+                    <button class="primary-btn" id="saveConnectionButton" type="button">Save</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="panel toolbar">
+            <div class="field">
+                <label for="searchInput">Search</label>
+                <input id="searchInput" type="text" autocomplete="off" placeholder="Search item, group, or person">
+            </div>
+            <div class="field">
+                <label for="personFilter">Person filter</label>
+                <select id="personFilter">
+                    <option value="__all__">All people</option>
+                </select>
+            </div>
+            <div class="toolbar-actions">
+                <button class="secondary-btn" id="clearFilterButton" type="button">Clear filters</button>
+                <button class="secondary-btn" id="editConnectionButton" type="button">Edit connection</button>
+            </div>
+            <div class="status-line" id="statusLine"></div>
+        </section>
+
+        <section class="board-panel">
+            <div class="board-head">
+                <div>
+                    <div class="board-title">Materials board</div>
+                    <div class="board-subtitle">Click any item to move it, or drag it onto another person card.</div>
+                </div>
+                <div class="board-status" id="boardStatus">Waiting for data</div>
+            </div>
+
+            <div id="loadingState" class="loading-state" hidden>Loading materials from Google Sheets...</div>
+            <div id="errorState" class="error-state" hidden></div>
+            <div id="emptyState" class="empty-state" hidden>No rows matched your current filters.</div>
+            <div id="personBoard" class="person-board"></div>
+        </section>
+    </main>
+
+    <div class="modal-backdrop" id="editModalBackdrop" aria-hidden="true">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
+            <div class="modal-head">
+                <div>
+                    <div class="modal-title" id="editModalTitle">Move item</div>
+                    <div class="modal-subtitle" id="editModalSubtitle"></div>
+                </div>
+                <button class="icon-btn" type="button" id="closeEditModalButton" aria-label="Close">×</button>
+            </div>
+
+            <div class="modal-grid">
+                <div class="field">
+                    <label>Item</label>
+                    <input id="modalItemInput" type="text" readonly>
+                </div>
+                <div class="field">
+                    <label>Current person</label>
+                    <input id="modalCurrentPersonInput" type="text" readonly>
+                </div>
+                <div class="field">
+                    <label for="modalPersonSelect">Move to an existing person</label>
+                    <select id="modalPersonSelect">
+                        <option value="__new__">New person...</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label for="modalNewPersonInput">Or type a new person name</label>
+                    <input id="modalNewPersonInput" type="text" autocomplete="off" placeholder="Enter a new person name">
+                </div>
+            </div>
+
+            <div class="helper-text" id="modalHelperText">
+                Choose an existing person or type a new name, then save. The row is updated in the sheet immediately.
+            </div>
+
+            <div class="modal-actions">
+                <button class="secondary-btn" type="button" id="cancelEditModalButton">Cancel</button>
+                <button class="primary-btn" type="button" id="saveEditModalButton">Save change</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const DEFAULT_SHEET_ID = '19yApUs-AasdcS1oerxjN-OsngO9vhkavaxXKUjqpuUY';
+        const STORAGE_KEYS = {
+            sheetId: 'isha_kc_sheetId',
+            appsScriptUrl: 'isha_kc_appsScriptUrl',
+            sheetName: 'isha_kc_sheetName'
+        };
+
+        const state = {
+            rows: [],
+            filteredRows: [],
+            people: [],
+            searchTerm: '',
+            personFilter: '__all__',
+            dragRowIndex: null,
+            activeRowIndex: null,
+            loading: false,
+            requestCounter: 0
+        };
+
+        const config = {
+            sheetId: localStorage.getItem(STORAGE_KEYS.sheetId) || DEFAULT_SHEET_ID,
+            appsScriptUrl: localStorage.getItem(STORAGE_KEYS.appsScriptUrl) || '',
+            sheetName: localStorage.getItem(STORAGE_KEYS.sheetName) || ''
+        };
+
+        const elements = {};
+
+        document.addEventListener('DOMContentLoaded', boot);
+
+        function boot() {
+            cacheElements();
+            bindEvents();
+            renderConfig();
+            syncSheetLink();
+
+            if (config.appsScriptUrl) {
+                loadMaterials();
+            } else {
+                setStatus('Add the Apps Script web app URL to load the board.');
+                showEmptyState('Connect the app to your Apps Script deployment to load the materials sheet.');
+            }
+        }
+
+        function cacheElements() {
+            [
+                'sheetIdInput', 'appsScriptUrlInput', 'sheetNameInput', 'saveConnectionButton', 'showConnectionButton',
+                'editConnectionButton', 'sheetLink', 'connectionStateChip', 'searchInput', 'personFilter',
+                'clearFilterButton', 'refreshButton', 'loadingState', 'errorState', 'emptyState', 'personBoard', 'connectionPanel',
+                'boardStatus', 'statusLine', 'visibleCount', 'visibleNote', 'personCount', 'groupCount', 'singleCount',
+                'editModalBackdrop', 'editModalTitle', 'editModalSubtitle', 'modalItemInput', 'modalCurrentPersonInput',
+                'modalPersonSelect', 'modalNewPersonInput', 'closeEditModalButton', 'cancelEditModalButton',
+                'saveEditModalButton', 'toast'
+            ].forEach((id) => {
+                elements[id] = document.getElementById(id);
+            });
+        }
+
+        function bindEvents() {
+            elements.saveConnectionButton.addEventListener('click', saveConnection);
+            elements.showConnectionButton.addEventListener('click', () => elements.connectionPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+            elements.editConnectionButton.addEventListener('click', () => elements.connectionPanel?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+            elements.searchInput.addEventListener('input', () => {
+                state.searchTerm = normalizeText(elements.searchInput.value);
+                applyFilters();
+            });
+            elements.personFilter.addEventListener('change', () => {
+                state.personFilter = elements.personFilter.value;
+                applyFilters();
+            });
+            elements.clearFilterButton.addEventListener('click', clearFilters);
+            elements.refreshButton.addEventListener('click', loadMaterials);
+            elements.closeEditModalButton.addEventListener('click', closeEditModal);
+            elements.cancelEditModalButton.addEventListener('click', closeEditModal);
+            elements.saveEditModalButton.addEventListener('click', saveModalChange);
+            elements.modalPersonSelect.addEventListener('change', toggleNewPersonField);
+            elements.modalNewPersonInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    saveModalChange();
+                }
+            });
+            elements.modalPersonSelect.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    saveModalChange();
+                }
+            });
+            elements.editModalBackdrop.addEventListener('click', (event) => {
+                if (event.target === elements.editModalBackdrop) {
+                    closeEditModal();
+                }
+            });
+        }
+
+        function renderConfig() {
+            elements.sheetIdInput.value = config.sheetId;
+            elements.appsScriptUrlInput.value = config.appsScriptUrl;
+            elements.sheetNameInput.value = config.sheetName;
+            elements.connectionStateChip.textContent = config.appsScriptUrl ? 'Connected' : 'Not connected';
+        }
+
+        function syncSheetLink() {
+            const sheetUrl = config.sheetId ? `https://docs.google.com/spreadsheets/d/${encodeURIComponent(config.sheetId)}/edit` : '#';
+            elements.sheetLink.href = sheetUrl;
+        }
+
+        function saveConnection() {
+            const nextSheetId = elements.sheetIdInput.value.trim() || DEFAULT_SHEET_ID;
+            const nextAppsScriptUrl = elements.appsScriptUrlInput.value.trim();
+            const nextSheetName = elements.sheetNameInput.value.trim();
+
+            if (!nextAppsScriptUrl) {
+                showError('Paste the Apps Script web app URL first.');
+                return;
+            }
+
+            config.sheetId = nextSheetId;
+            config.appsScriptUrl = nextAppsScriptUrl;
+            config.sheetName = nextSheetName;
+
+            localStorage.setItem(STORAGE_KEYS.sheetId, nextSheetId);
+            localStorage.setItem(STORAGE_KEYS.appsScriptUrl, nextAppsScriptUrl);
+            localStorage.setItem(STORAGE_KEYS.sheetName, nextSheetName);
+
+            renderConfig();
+            syncSheetLink();
+            showToast('Connection saved. Loading data...');
+            loadMaterials();
+        }
+
+        async function loadMaterials() {
+            if (!config.appsScriptUrl) {
+                showError('Add the Apps Script URL before loading the board.');
+                return;
+            }
+
+            setLoading(true);
+            clearError();
+            setStatus('Loading materials from Google Sheets...');
+
+            try {
+                const response = await jsonpRequest({
+                    sheetId: config.sheetId,
+                    sheetName: config.sheetName,
+                    action: 'getMaterials'
+                });
+
+                if (!response.success) {
+                    throw new Error(response.error || 'Unable to load materials');
+                }
+
+                state.rows = Array.isArray(response.data) ? response.data : [];
+                state.people = Array.isArray(response.people) ? response.people : uniqueValues(state.rows.map((row) => row.person));
+                applyFilters(true);
+                setStatus(`Loaded ${state.rows.length} material row(s).`);
+                showToast('Materials loaded');
+            } catch (error) {
+                showError(`Failed to load materials: ${error.message}`);
+                setStatus('Could not load data. Check the Apps Script URL and deployment access.');
+                showEmptyState('No data is available yet.');
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function applyFilters(skipToast) {
+            const filtered = state.rows.filter((row) => {
+                const person = normalizeText(row.person);
+                const group = normalizeText(row.group);
+                const item = normalizeText(row.item);
+                const searchHit = !state.searchTerm
+                    || person.includes(state.searchTerm)
+                    || group.includes(state.searchTerm)
+                    || item.includes(state.searchTerm)
+                    || normalizeText(row.asOfDate).includes(state.searchTerm);
+                const personHit = state.personFilter === '__all__' || normalizeText(row.person) === normalizeText(state.personFilter);
+                return searchHit && personHit;
+            });
+
+            state.filteredRows = filtered;
+            state.people = uniqueValues(state.rows.map((row) => row.person));
+            renderPersonFilter();
+            renderBoard();
+            updateStats();
+
+            if (!skipToast) {
+                const label = state.filteredRows.length === 1 ? '1 visible row' : `${state.filteredRows.length} visible rows`;
+                setStatus(label);
+            }
+        }
+
+        function renderPersonFilter() {
+            const currentValue = state.personFilter;
+            const options = ['<option value="__all__">All people</option>'];
+            state.people.forEach((person) => {
+                options.push(`<option value="${escapeHtml(person)}">${escapeHtml(person)}</option>`);
+            });
+            elements.personFilter.innerHTML = options.join('');
+            elements.personFilter.value = state.people.some((person) => normalizeText(person) === normalizeText(currentValue))
+                ? currentValue
+                : '__all__';
+        }
+
+        function renderBoard() {
+            const board = elements.personBoard;
+            board.innerHTML = '';
+
+            if (!state.filteredRows.length) {
+                showEmptyState(state.rows.length ? 'No rows matched your current filters.' : 'No rows were loaded from the sheet.');
+                return;
+            }
+
+            hideEmptyState();
+
+            const groupedByPerson = groupRowsByPerson(state.filteredRows);
+            const orderedPeople = Array.from(groupedByPerson.keys()).sort((left, right) => left.localeCompare(right, undefined, { sensitivity: 'base' }));
+
+            orderedPeople.forEach((person) => {
+                const personRows = groupedByPerson.get(person);
+                const card = document.createElement('article');
+                card.className = 'person-card';
+                card.dataset.person = person;
+                card.addEventListener('dragover', handlePersonDragOver);
+                card.addEventListener('dragleave', handlePersonDragLeave);
+                card.addEventListener('drop', handlePersonDrop);
+
+                const groupedBySection = groupRowsBySection(personRows);
+                const summary = summarizePersonRows(personRows);
+
+                card.innerHTML = `
+                    <div class="person-head">
+                        <div>
+                            <div class="person-name">${escapeHtml(person || 'Unassigned')}</div>
+                            <div class="person-meta">${summary.meta}</div>
+                        </div>
+                        <div class="person-badge">${summary.badge}</div>
+                    </div>
+                `;
+
+                const body = document.createElement('div');
+                body.className = 'person-body';
+
+                groupedBySection.groups.forEach((groupRows) => {
+                    const groupCard = document.createElement('section');
+                    groupCard.className = 'group-box';
+
+                    const groupHead = document.createElement('div');
+                    groupHead.className = 'group-head';
+                    groupHead.innerHTML = `
+                        <div class="group-name">${escapeHtml(groupRows[0].group || 'Ungrouped')}</div>
+                        <div class="group-count">${groupRows.length} item${groupRows.length === 1 ? '' : 's'}</div>
+                    `;
+
+                    const groupItems = document.createElement('div');
+                    groupItems.className = 'group-items';
+
+                    groupRows.forEach((row) => {
+                        groupItems.appendChild(createItemCard(row, true));
+                    });
+
+                    groupCard.appendChild(groupHead);
+                    groupCard.appendChild(groupItems);
+                    body.appendChild(groupCard);
+                });
+
+                groupedBySection.singleRows.forEach((row) => {
+                    body.appendChild(createItemCard(row, false));
+                });
+
+                card.appendChild(body);
+                board.appendChild(card);
+            });
+        }
+
+        function createItemCard(row, showGroupPill) {
+            const item = document.createElement('button');
+            item.type = 'button';
+            item.className = 'item-card';
+            item.draggable = true;
+            item.dataset.rowIndex = String(row.rowIndex);
+            item.dataset.person = row.person || '';
+            item.addEventListener('click', () => openEditModal(row.rowIndex));
+            item.addEventListener('dragstart', (event) => handleItemDragStart(event, row));
+            item.addEventListener('dragend', handleItemDragEnd);
+
+            const meta = [];
+            if (showGroupPill && row.group) {
+                meta.push(`<span class="pill">${escapeHtml(row.group)}</span>`);
+            }
+            if (row.asOfDate) {
+                meta.push(`<span>${escapeHtml(row.asOfDate)}</span>`);
+            }
+
+            item.innerHTML = `
+                <div class="item-card-main">
+                    <div class="item-title">${escapeHtml(row.item || 'Untitled item')}</div>
+                    <div class="item-meta">${meta.join('')}</div>
+                </div>
+                <div class="item-action">Click to change person</div>
+            `;
+
+            return item;
+        }
+
+        function groupRowsByPerson(rows) {
+            const map = new Map();
+            rows.forEach((row) => {
+                const person = row.person || 'Unassigned';
+                if (!map.has(person)) {
+                    map.set(person, []);
+                }
+                map.get(person).push(row);
+            });
+            return map;
+        }
+
+        function groupRowsBySection(rows) {
+            const grouped = new Map();
+            const singles = [];
+
+            rows.forEach((row) => {
+                const key = row.group || '';
+                if (!key) {
+                    singles.push(row);
+                    return;
+                }
+
+                if (!grouped.has(key)) {
+                    grouped.set(key, []);
+                }
+
+                grouped.get(key).push(row);
+            });
+
+            const groups = [];
+            grouped.forEach((groupRows) => {
+                if (groupRows.length > 1) {
+                    groups.push(groupRows);
+                } else {
+                    singles.push(groupRows[0]);
+                }
+            });
+
+            return { groups, singleRows: singles };
+        }
+
+        function summarizePersonRows(rows) {
+            const groupCount = uniqueValues(rows.map((row) => row.group).filter(Boolean)).length;
+            const singleCount = rows.filter((row) => {
+                const countInGroup = rows.filter((candidate) => candidate.group === row.group).length;
+                return !row.group || countInGroup === 1;
+            }).length;
+            return {
+                badge: `${rows.length} item${rows.length === 1 ? '' : 's'}`,
+                meta: `${groupCount} group${groupCount === 1 ? '' : 's'} · ${singleCount} single${singleCount === 1 ? '' : 's'}`
+            };
+        }
+
+        function updateStats() {
+            const people = uniqueValues(state.filteredRows.map((row) => row.person || 'Unassigned'));
+            const grouped = new Set(state.filteredRows.map((row) => row.group).filter(Boolean));
+            const singleCount = state.filteredRows.filter((row) => {
+                if (!row.group) {
+                    return true;
+                }
+                return state.filteredRows.filter((candidate) => candidate.person === row.person && candidate.group === row.group).length === 1;
+            }).length;
+
+            elements.visibleCount.textContent = String(state.filteredRows.length);
+            elements.personCount.textContent = String(people.length);
+            elements.groupCount.textContent = String(grouped.size);
+            elements.singleCount.textContent = String(singleCount);
+            elements.visibleNote.textContent = state.searchTerm || state.personFilter !== '__all__'
+                ? 'Filtered view'
+                : 'All rows from the sheet';
+            elements.boardStatus.textContent = state.filteredRows.length
+                ? `${state.filteredRows.length} visible row${state.filteredRows.length === 1 ? '' : 's'}`
+                : 'Nothing to display';
+        }
+
+        function openEditModal(rowIndex) {
+            const row = state.rows.find((candidate) => candidate.rowIndex === rowIndex);
+            if (!row) {
+                return;
+            }
+
+            state.activeRowIndex = rowIndex;
+            elements.editModalTitle.textContent = 'Move item to another person';
+            elements.editModalSubtitle.textContent = `${row.item || 'Untitled item'} · ${row.group || 'Ungrouped'} · ${row.asOfDate || 'No date'}`;
+            elements.modalItemInput.value = row.item || '';
+            elements.modalCurrentPersonInput.value = row.person || 'Unassigned';
+            elements.modalNewPersonInput.value = '';
+
+            const options = ['<option value="__new__">New person...</option>'];
+            uniqueValues(state.rows.map((candidate) => candidate.person).filter(Boolean)).forEach((person) => {
+                options.push(`<option value="${escapeHtml(person)}">${escapeHtml(person)}</option>`);
+            });
+            elements.modalPersonSelect.innerHTML = options.join('');
+            elements.modalPersonSelect.value = state.people.some((person) => normalizeText(person) === normalizeText(row.person))
+                ? row.person
+                : '__new__';
+            toggleNewPersonField();
+
+            elements.editModalBackdrop.classList.add('open');
+            elements.editModalBackdrop.setAttribute('aria-hidden', 'false');
+            elements.modalPersonSelect.focus();
+        }
+
+        function closeEditModal() {
+            state.activeRowIndex = null;
+            elements.editModalBackdrop.classList.remove('open');
+            elements.editModalBackdrop.setAttribute('aria-hidden', 'true');
+        }
+
+        function toggleNewPersonField() {
+            const isNew = elements.modalPersonSelect.value === '__new__';
+            elements.modalNewPersonInput.disabled = !isNew;
+            elements.modalNewPersonInput.parentElement.style.opacity = isNew ? '1' : '0.65';
+            if (!isNew) {
+                elements.modalNewPersonInput.value = '';
+            }
+        }
+
+        async function saveModalChange() {
+            if (!state.activeRowIndex) {
+                return;
+            }
+
+            const selectedPerson = elements.modalPersonSelect.value;
+            const typedPerson = elements.modalNewPersonInput.value.trim();
+            const nextPerson = selectedPerson === '__new__' ? typedPerson : selectedPerson;
+
+            if (!nextPerson) {
+                showError('Choose an existing person or type a new person name.');
+                return;
+            }
+
+            await updatePersonName(state.activeRowIndex, nextPerson);
+            closeEditModal();
+        }
+
+        async function updatePersonName(rowIndex, nextPerson) {
+            setLoading(true);
+            clearError();
+
+            try {
+                const response = await jsonpRequest({
+                    sheetId: config.sheetId,
+                    sheetName: config.sheetName,
+                    action: 'updatePerson',
+                    rowIndex: rowIndex,
+                    person: nextPerson
+                });
+
+                if (!response.success) {
+                    throw new Error(response.error || 'Unable to update person');
+                }
+
+                const row = state.rows.find((candidate) => candidate.rowIndex === rowIndex);
+                if (row) {
+                    row.person = nextPerson;
+                }
+
+                state.people = uniqueValues(state.rows.map((candidate) => candidate.person));
+                applyFilters(true);
+                showToast(`Moved to ${nextPerson}`);
+                setStatus(`Updated ${nextPerson}`);
+            } catch (error) {
+                showError(`Failed to update person: ${error.message}`);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function handleItemDragStart(event, row) {
+            state.dragRowIndex = row.rowIndex;
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', String(row.rowIndex));
+            event.currentTarget.classList.add('dragging');
+        }
+
+        function handleItemDragEnd(event) {
+            state.dragRowIndex = null;
+            event.currentTarget.classList.remove('dragging');
+            document.querySelectorAll('.person-card.drag-over').forEach((card) => card.classList.remove('drag-over'));
+        }
+
+        function handlePersonDragOver(event) {
+            event.preventDefault();
+            event.dataTransfer.dropEffect = 'move';
+            event.currentTarget.classList.add('drag-over');
+        }
+
+        function handlePersonDragLeave(event) {
+            event.currentTarget.classList.remove('drag-over');
+        }
+
+        async function handlePersonDrop(event) {
+            event.preventDefault();
+            const targetCard = event.currentTarget;
+            targetCard.classList.remove('drag-over');
+
+            const targetPerson = targetCard.dataset.person || 'Unassigned';
+            const rowIndex = Number(event.dataTransfer.getData('text/plain') || state.dragRowIndex);
+            if (!rowIndex) {
+                return;
+            }
+
+            const row = state.rows.find((candidate) => candidate.rowIndex === rowIndex);
+            if (!row || row.person === targetPerson) {
+                return;
+            }
+
+            await updatePersonName(rowIndex, targetPerson);
+        }
+
+        function clearFilters() {
+            state.searchTerm = '';
+            state.personFilter = '__all__';
+            elements.searchInput.value = '';
+            elements.personFilter.value = '__all__';
+            applyFilters();
+        }
+
+        function setLoading(isLoading) {
+            state.loading = isLoading;
+            elements.loadingState.hidden = !isLoading;
+            elements.refreshButton.disabled = isLoading;
+            elements.saveConnectionButton.disabled = isLoading;
+            elements.saveEditModalButton.disabled = isLoading;
+        }
+
+        function setStatus(message) {
+            elements.statusLine.textContent = message;
+            elements.statusLine.classList.remove('error');
+        }
+
+        function showError(message) {
+            elements.errorState.textContent = message;
+            elements.errorState.hidden = false;
+            elements.statusLine.textContent = message;
+            elements.statusLine.classList.add('error');
+        }
+
+        function clearError() {
+            elements.errorState.hidden = true;
+            elements.errorState.textContent = '';
+            elements.statusLine.classList.remove('error');
+        }
+
+        function showEmptyState(message) {
+            elements.emptyState.textContent = message;
+            elements.emptyState.hidden = false;
+        }
+
+        function hideEmptyState() {
+            elements.emptyState.hidden = true;
+        }
+
+        function showToast(message) {
+            elements.toast.textContent = message;
+            elements.toast.classList.add('show');
+            window.clearTimeout(elements.toastTimer);
+            elements.toastTimer = window.setTimeout(() => {
+                elements.toast.classList.remove('show');
+            }, 2400);
+        }
+
+        function normalizeText(value) {
+            return String(value || '').toLowerCase().trim().replace(/\s+/g, ' ');
+        }
+
+        function uniqueValues(values) {
+            return Array.from(new Set(values.filter(Boolean))).sort((left, right) => String(left).localeCompare(String(right), undefined, { sensitivity: 'base' }));
+        }
+
+        function escapeHtml(value) {
+            return String(value || '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function buildAppsScriptUrl(params) {
+            const query = new URLSearchParams({
+                ...params,
+                callback: `ishaKcCb_${Date.now()}_${state.requestCounter++}`
+            });
+            return `${config.appsScriptUrl}?${query.toString()}`;
+        }
+
+        function jsonpRequest(params) {
+            return new Promise((resolve, reject) => {
+                const callbackName = `ishaKcCb_${Date.now()}_${state.requestCounter++}`;
+                const script = document.createElement('script');
+
+                const cleanup = () => {
+                    delete window[callbackName];
+                    if (script.parentNode) {
+                        script.parentNode.removeChild(script);
+                    }
+                };
+
+                const timeoutId = window.setTimeout(() => {
+                    cleanup();
+                    reject(new Error('Request timed out'));
+                }, 15000);
+
+                window[callbackName] = (data) => {
+                    window.clearTimeout(timeoutId);
+                    cleanup();
+                    resolve(data);
+                };
+
+                script.onerror = () => {
+                    window.clearTimeout(timeoutId);
+                    cleanup();
+                    reject(new Error('Unable to reach Apps Script endpoint'));
+                };
+
+                const query = new URLSearchParams({
+                    ...params,
+                    callback: callbackName
+                });
+
+                script.src = `${config.appsScriptUrl}?${query.toString()}`;
+                document.body.appendChild(script);
+            });
+        }
+    </script>
+</body>
+</html>
